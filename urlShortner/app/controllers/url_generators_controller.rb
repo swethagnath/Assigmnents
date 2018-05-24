@@ -9,7 +9,10 @@ class UrlGeneratorsController < ApplicationController
 			redirect_to url_generators_path,notice:"shortened url is already exit for this url:#{@url.encoded_url}"
 		else						
 			@url.save
-			redirect_to url_generators_path,notice:"successfully created"
+			respond_to do |format| 
+				format.js
+			end
+			# redirect_to url_generators_path,notice:"successfully created"
 		end
 	end
 	def show	

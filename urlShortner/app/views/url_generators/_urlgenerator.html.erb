@@ -1,0 +1,4 @@
+<tr>
+	<td><%=@url.url%></td>
+	<td><%=link_to @url.encoded_url,url_generator_path(@url.modified_url)%></td>
+</tr>

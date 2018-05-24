@@ -41,9 +41,9 @@ class UrlGenerator < ApplicationRecord
 	end
 	def self.import(file,user)
 	  CSV.foreach(file.path,headers: true) do |row|
-	  	  url         = UrlGenerator.new row.to_hash
-	  	  url.user_id = user.id
-  		  url.save
+	  	url         = UrlGenerator.new row.to_hash
+	  	url.user_id = user.id
+  		url.save
 	  end
  	end
 end
