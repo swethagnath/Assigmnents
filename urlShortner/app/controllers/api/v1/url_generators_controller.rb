@@ -44,6 +44,15 @@ class Api::V1::UrlGeneratorsController < Api::V1::ApiController
 			render json:{notice:"successfully destroyed"}
 		end
 	end
+	#localhost:3000/api/v1/url_generators/modified_url?url=fW0aXOGk
+	def modified_url
+		@url = UrlGenerator.find_by(encoded_url:params["url"])
+		if @url.nil?
+			render json:{error:"not found"}
+		else
+			render json:{modified_url:@url.modified_url}
+		end
+	end
 	private
 		def url_params
 			params[:url_generator].permit(:url,:user_id)
