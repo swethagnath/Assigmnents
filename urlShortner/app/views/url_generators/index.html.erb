@@ -14,10 +14,11 @@
 			<h1><%=notice%></h1>
 			<%=form_for(UrlGenerator.new,remote:true) do |f|%>
 				<div class="form-group">
-					<%=f.text_field :url,placeholder:"paste a link to shorten it",class:"form-control",id:"form-field"%>  
+					<%=f.text_field :url,placeholder:"paste a link to shorten it",class:"form-control",id:"formField"%> 
+					<span id="FormError"></span> 
 				</div>
 				<div class="form-group"> 
-				<%=f.submit "shorten",class:"form-control-lg btn btn-success"%>	
+				<%=f.submit "shorten",class:"form-control-lg btn btn-success",id:"submitTag"%>	
 				</div>
 			<%end%>
 			<h3>List Of Short Urls</h3>
@@ -52,7 +53,72 @@
 	<%1.times do%>
 		<br>
 	<%end%>
+	<div class="row">
+		<div class="col-md-2">
+		</div>
+		<div class="col-md-8">
+			<h1>urls shown below is did through ajax call to api controller</h1>
+			<h2>list of all urls</h2>
+			<p id = "urls"></p>
+		</div>
+	</div>
 <%end%>
+<script>
+	var inputHandle = document.getElementById("formField");
+	var submitTag   = document.getElementById("submitTag");
+	var formError   = document.getElementById("FormError");
+	var urls        = document.getElementById("urls");
+	var validator = {
+		inputValid: false
+	}
+	function inputHandleValidation(){
+		if(inputHandle.value === ""){
+			validator.inputValid = false;
+			formError.innerHTML = "can't be blank";
+		}else{
+			validator.inputValid = true;
+			formError.innerHTML = "";
+		}
+	}
+//checking for the client side validations
+	submitTag.addEventListener('click',function(e){
+		inputHandleValidation();
+		if(Object.values(validator).includes(false)){
+			e.preventDefault();
+		}
+	});
+//fecting urls from api controller through ajax
+	var xhr = new XMLHttpRequest();
+	var shortUrls
+	xhr.open('GET','http://localhost:3000/api/v1/url_generators',true);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState === 4 && xhr.status === 200){
+		    console.log(xhr.responseText);
+		    shortUrls = JSON.parse(xhr.responseText);
+		    shortUrls["list_of_short_urls"].forEach(function(v){
+		      	var xhr = new XMLHttpRequest();
+		      	xhr.open('GET',`http://localhost:3000/api/v1/url_generators/${v}`,true);
+			    xhr.onreadystatechange = function(){
+				    if(xhr.readyState === 4 && xhr.status === 200){
+				    	url = JSON.parse(xhr.responseText);
+				    	console.log(url);
+				    	a          = document.createElement('a');
+				    	li         = document.createElement('li');
+				    	href       = document.createAttribute('href');
+				    	href.value = (`http://${url["orginal_url"]}`);
+				    	text       = document.createTextNode(v);
+				    	a.setAttributeNode(href);
+				    	a.appendChild(text);
+				    	li.appendChild(a);
+				    	urls.appendChild(li);
+			      	}
+			    }
+			    xhr.send();
+			});
+		}
+	}
+	xhr.send();
+</script>
 
 
 
