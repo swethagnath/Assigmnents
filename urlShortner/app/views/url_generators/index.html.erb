@@ -111,22 +111,21 @@
 	xhr.open('GET','http://localhost:3000/api/v1/url_generators',true);
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState === 4 && xhr.status === 200){
-	    shortUrls = JSON.parse(xhr.responseText);
-	    shortUrls["list_of_short_urls"].forEach(function(shortenUrl){
-	    	var shortenUrL = shortenUrl["encoded_url"];
-	    	var a    = document.createElement('a');
-	    	var li   = document.createElement('li');
-	    	var text = document.createTextNode(`http://localhost:3000/${shortenUrl["encoded_url"]}`);
-	    	a.setAttribute("href",shortenUrl["encoded_url"]);
-	    	a.setAttribute("target","_blank");
-	    	a.appendChild(text);
-	    	li.appendChild(a);
-	    	urls.appendChild(li);
-		  });
+		    shortUrls = JSON.parse(xhr.responseText);
+		    shortUrls["list_of_short_urls"].forEach(function(shortenUrl){
+		    	var a    = document.createElement('a');
+		    	var li   = document.createElement('li');
+		    	var text = document.createTextNode(`http://localhost:3000/${shortenUrl["encoded_url"]}`);
+		    	a.setAttribute("href",shortenUrl["encoded_url"]);
+		    	a.setAttribute("target","_blank");
+		    	a.appendChild(text);
+		    	li.appendChild(a);
+		    	urls.appendChild(li);
+			});
 		}
 	}
 	xhr.send();	
-	// loading.....when ajax called for form[remote:true]
+	// loading.....when ajax called for form[remote:true] this is to handle data-remove qajax call
 	$(document).ready(function(){
 		$("#submitTag").on('click',function(){
 			if($("#submitTag").text === ""){
