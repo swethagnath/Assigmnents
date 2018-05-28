@@ -13,11 +13,11 @@
 		<h1><%=notice%></h1>
 		<%=form_for(UrlGenerator.new,remote:true) do |f|%>
 			<div class="form-group">
-				<%=f.text_field :url,placeholder:"paste a link to shorten it",class:"form-control",id:"formField"%> 
+				<%=f.text_field :url,placeholder:"Paste a link to shorten it",class:"form-control",id:"formField"%> 
 				<span id="FormError"></span> 
 			</div>
 			<div class="form-group"> 
-			<%=f.submit "shorten",class:"form-control-lg btn btn-success",id:"submitTag"%>	
+			<%=f.submit "Submit",class:"form-control-lg btn btn-success",id:"submitTag"%>	
 			</div>
 		<%end%>
 		<h3>1) List Of Short Urls</h3>
@@ -125,7 +125,7 @@
 		}
 	}
 	xhr.send();	
-	// loading.....when ajax called for form[remote:true] this is to handle data-remove qajax call
+	// loading.....when ajax called for form[remote:true] this is to handle data-remove ajax call
 	$(document).ready(function(){
 		$("#submitTag").on('click',function(){
 			if($("#submitTag").text === ""){
