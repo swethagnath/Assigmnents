@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :url_generator do
-    url "www.google.com"
+    url "www.ssss.com"
   end
 end

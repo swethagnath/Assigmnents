@@ -5,8 +5,7 @@ class UrlGeneratorsController < ApplicationController
 		if @url.modified_url.nil?	
 			redirect_to url_generators_path,notice:"shortened version of this  is  url already exist:#{@url.encoded_url}"
 		else	
-			binding.pry					
-			@url.save!
+			@url.save
 			respond_to do |format| 
 				format.js
 			end

@@ -1,5 +1,6 @@
 require 'csv'
 class UrlGenerator < ApplicationRecord
+	before_validation :check_the_url,on: :create
 	validates_presence_of :url,:modified_url,:encoded_url
 	validates_uniqueness_of :encoded_url
 	def eight_chara

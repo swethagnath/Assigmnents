@@ -15,7 +15,7 @@ class Api::V1::UrlGeneratorsController < Api::V1::ApiController
 		@url = UrlGenerator.new(url_params)
 		@url.check_the_url
 		if @url.modified_url.nil?
-			render json:{notice: "cannot create since this url is already exit",encoded_url:@url.encoded_url,status:200}
+			render json:{notice: "cannot create since a short link for this url is already exit",encoded_url:@url.encoded_url,status:200}
 		else
 			@url.save
 			render json:{notice: "successfully created",url:@url}					
