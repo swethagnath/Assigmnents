@@ -1,8 +1,6 @@
 require 'csv'
 class UrlGenerator < ApplicationRecord
-	belongs_to :user
-	before_validation :check_the_url ,on: :create
-	validates_presence_of :modified_url,:url,:user_id,:encoded_url
+	validates_presence_of :url,:modified_url,:encoded_url
 	validates_uniqueness_of :encoded_url
 	def eight_chara
 		char_number = ('0'..'9').to_a
@@ -39,11 +37,11 @@ class UrlGenerator < ApplicationRecord
 			self.encoded_url = value.encoded_url
 		end
 	end
-	def self.import(file,user)
-	  CSV.foreach(file.path,headers: true) do |row|
-	  	url         = UrlGenerator.new row.to_hash
-	  	url.user_id = user.id
-  		url.save
-	  end
- 	end
+	def self.import(file)
+		CSV.foreach(file.path,headers: true) do |row|
+			url      = UrlGenerator.new row.to_hash
+			url.check_the_url
+			url.save
+		end
+	end
 end

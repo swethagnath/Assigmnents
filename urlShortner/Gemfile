@@ -4,9 +4,8 @@ git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
   "https://github.com/#{repo_name}.git"
 end
-
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'csv_validator'
 gem 'devise'
 gem 'pry'
 gem 'rails', '~> 5.1.6'
@@ -43,7 +42,7 @@ group :development, :test do
   gem 'selenium-webdriver'
   gem 'rspec-rails', '~> 3.6.1'
 end
-
+gem "factory_bot_rails", "~> 4.0", :group => :test
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'pry'

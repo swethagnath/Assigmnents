@@ -4,7 +4,6 @@ class CreateUrlGenerators < ActiveRecord::Migration[5.1]
       t.integer :user_id
       t.string :url
       t.string :encoded_url
-
       t.timestamps
     end
   end

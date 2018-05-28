@@ -1,121 +1,124 @@
 <br>
-<%if user_signed_in?%>
-	<div class="row">
-		<div class="col-md-4">
-		</div>
-		<div class="col-md-3">
-			<h1>Url Shortner</h1>
-		</div>
+<div class="row">
+	<div class="col-md-4">
 	</div>
-	<div class="row">
-		<div class="col-md-2">
-		</div>
-		<div class="col-md-8">
-			<h1><%=notice%></h1>
-			<%=form_for(UrlGenerator.new,remote:true) do |f|%>
-				<div class="form-group">
-					<%=f.text_field :url,placeholder:"paste a link to shorten it",class:"form-control",id:"formField"%> 
-					<span id="FormError"></span> 
-				</div>
-				<div class="form-group"> 
-				<%=f.submit "shorten",class:"form-control-lg btn btn-success",id:"submitTag"%>	
-				</div>
-			<%end%>
-			<h3>List Of Short Urls</h3>
-			<%if(user_signed_in?)%>
-				<br>
-				<table class="table table-hover" border="1" id="url-generator">
-					<thead class="table-success">
-						<tr>
-							<th>orginal url</th>
-							<th>shorten url</th>
-						</tr>
-					</thead>
-					<tbody>
-					<%UrlGenerator.where(user_id:current_user.id).each_with_index do |n,index|%>						
-						<tr>
-							<td><%=n.url%></td>
-							<td><%=link_to n.encoded_url,url_generator_path(n.id)%></td>
-						<tr>						
-					<%end%>
-					</tbody>
-				</table>
-			<%end%>
-			<br>
-			<h2>uploading '.csv' file containing urls only</h2>
-			<br>
-			<%= form_tag import_url_generators_path, multipart: true do %>
-			  <%= file_field_tag :file ,class:"form-control-lg btn btn-success"%>
-			  <%= submit_tag "Import",class:"form-control-lg btn btn-primary" %>
-			<%end%>
-		</div>
+	<div class="col-md-3">
+		<h1>Url Shortner</h1>
 	</div>
-	<%1.times do%>
+</div>
+<div class="row">
+	<div class="col-md-2">
+	</div>
+	<div class="col-md-8">
+		<h1><%=notice%></h1>
+		<%=form_for(UrlGenerator.new,remote:true) do |f|%>
+			<div class="form-group">
+				<%=f.text_field :url,placeholder:"paste a link to shorten it",class:"form-control",id:"formField"%> 
+				<span id="FormError"></span> 
+			</div>
+			<div class="form-group"> 
+			<%=f.submit "shorten",class:"form-control-lg btn btn-success",id:"submitTag"%>	
+			</div>
+		<%end%>
+		<h3>1) List Of Short Urls</h3>
+			<br>
+			<table class="table table-hover" border="1" id="url-generator">
+				<thead class="table-success">
+					<tr>
+						<th>orginal url</th>
+						<th>shorten url</th>
+					</tr>
+				</thead>
+				<tbody>
+				<%UrlGenerator.all.each_with_index do |n,index|%>	
+					<tr>
+						<td><%=n.url%></td>
+						<td><%=link_to "http://localhost:3000/#{n.encoded_url}",n.encoded_url,target: :_blank%></td>
+					<tr>						
+				<%end%>
+				</tbody>
+			</table>
 		<br>
-	<%end%>
-	<div class="row">
-		<div class="col-md-2">
-		</div>
-		<div class="col-md-8">
-			<h1>urls shown below is done through ajax call to api controller</h1>
-			<h2>list of all urls</h2>
-			<p id = "urls"></p>
-		</div>
+		<h3>2) uploading '.csv' file containing urls only</h3>
+		<br>
+		<%= form_tag import_url_generators_path, multipart: true do %>
+		  <%= file_field_tag :file ,class:"form-control-lg btn btn-success",id:"csvInput"%>
+		  <%= submit_tag "Import",class:"form-control-lg btn btn-primary",id:"importSubmit" %>
+		<%end%>
+		<span id="csvError"></span> 
 	</div>
+</div>
+<%1.times do%>
+	<br>
 <%end%>
+<div class="row">
+	<div class="col-md-2">
+	</div>
+	<div class="col-md-8">
+		<h2>3) urls shown below has been done through ajax call to api controller</h2>
+		<p id = "urls"></p>
+	</div>
+</div>
 <script>
 	var inputHandle = document.getElementById("formField");
 	var submitTag   = document.getElementById("submitTag");
 	var formError   = document.getElementById("FormError");
 	var urls        = document.getElementById("urls");
-	var dataUser    = document.getElementById("data-user-id");
-	var validator = {
-		inputValid: false
-	}
+	var csvSubmit   = document.getElementById("importSubmit");
+	var csvInput    = document.getElementById("csvInput");
+	var csvError    = document.getElementById("csvError");
+	var inputValid  = false;
+	var csvValid    = false;
 	function inputHandleValidation(){
 		if(inputHandle.value === ""){
-			validator.inputValid = false;
-			formError.innerHTML = "can't be blank";
+			inputValid = false;
+			formError.innerHTML = "Can't Be Blank";
 		}else{
-			validator.inputValid = true;
+			inputValid = true;
 			formError.innerHTML = "";
+		}
+	}
+	function csvSubmitValidation(){
+		if(csvInput.value === ""){
+			csvValid  = false;
+			csvError.innerHTML = "Can't Be Blank";
+		}else{
+			csvValid  = true;
+			csvError.innerHTML = "";
 		}
 	}
     //checking for the client side validations
 	submitTag.addEventListener('click',function(e){
 		inputHandleValidation();
-		if(Object.values(validator).includes(false)){
+		if(inputValid === false){
 			e.preventDefault();
 		}
 	});
-    //fecting urls from api controller through ajax
+	csvSubmit.addEventListener('click',function(e){
+		csvSubmitValidation();
+		if(csvValid  === false){
+			e.preventDefault();
+		}
+	});
+  //fecting urls from api controller through ajax
 	var xhr = new XMLHttpRequest();
 	var shortUrls;
 	xhr.open('GET','http://localhost:3000/api/v1/url_generators',true);
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState === 4 && xhr.status === 200){
-		    console.log(xhr.responseText);
-		    shortUrls = JSON.parse(xhr.responseText);
-		    shortUrls["list_of_short_urls"].forEach(function(shortenUrl){
-		      	var xhr = new XMLHttpRequest();
-		        xhr.open('GET',`http://localhost:3000/api/v1/url_generators/modified_url?url=${shortenUrl}`,true);
-			    xhr.onreadystatechange = function(){
-				    if(xhr.readyState === 4 && xhr.status === 200){
-				    	url = JSON.parse(xhr.responseText);
-				    	a          = document.createElement('a');
-				    	li         = document.createElement('li');
-				    	href       = document.createAttribute('href');
-				    	href.value = url["modified_url"]; ///modified url is used since rails doesnt support without http protocol
-				    	text       = document.createTextNode(shortenUrl);
-				    	a.setAttributeNode(href);
-				    	a.appendChild(text);
-				    	li.appendChild(a);
-				    	urls.appendChild(li);
-			      	}
-			    }
-			    xhr.send();
-			});
+	    shortUrls = JSON.parse(xhr.responseText);
+	    shortUrls["list_of_short_urls"].forEach(function(shortenUrl){
+	    	var shortenUrL = shortenUrl["encoded_url"];
+	    	var a    = document.createElement('a');
+	    	var li   = document.createElement('li');
+	    	var text = document.createTextNode(`http://localhost:3000/${shortenUrl["encoded_url"]}`);
+	    	a.setAttribute("href",shortenUrl["encoded_url"]);
+	    	a.setAttribute("target","_blank");
+	    	a.appendChild(text);
+	    	li.appendChild(a);
+	    	urls.appendChild(li);
+		  });
 		}
 	}
-	xhr.send();
+	xhr.send();	
 </script>

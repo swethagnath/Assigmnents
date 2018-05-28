@@ -1,4 +1,4 @@
 <tr>
-	<td><%=@url.url%></td>
-	<td><%=link_to @url.encoded_url,url_generator_path(@url.modified_url)%></td>
+  <td><%=@url.url%></td>
+  <td><%=link_to "http://localhost:3000/#{@url.encoded_url}",@url.encoded_url%></td>
 </tr>

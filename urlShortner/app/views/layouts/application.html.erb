@@ -5,31 +5,10 @@
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>  
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   </head>
   <body>
-  	<% if user_signed_in? %> 
-      	welcome! <%= current_user.email %> 
-      	<%= link_to "Account Setting", edit_user_registration_path %>  | <%= link_to "Logout", 			                 destroy_user_session_path, method: :delete %> | 
-    <% else %>
-      <br>
-      <br>
-      <div class="row">
-        <div class="col-md-4">
-        </div>
-        <div class="col-md-8">
-            <h1>Url Shortner</h1>
-          	<h4><%= link_to "Register", new_user_registration_path %> | <%= link_to "Login", 					               new_user_session_path %> </h4>
-            <p>please use below email and password to sign in else you can register</p>
-            <div>
-              <h4>email    : swetha@gmail.com</h4>
-              <h4>password :  123swetha</h4>
-            </div> 
-        </div>
-      </div>
-    <% end %>
     <%= yield %>
   </body>
 </html>

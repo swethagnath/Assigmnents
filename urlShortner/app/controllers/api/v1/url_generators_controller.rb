@@ -2,21 +2,20 @@ class Api::V1::UrlGeneratorsController < Api::V1::ApiController
 	#method : get
 	#localhost:3000/api/v1/url_generators 
 	def index
-		@urls = UrlGenerator.select("encoded_url").all
+		@urls = UrlGenerator.select("encoded_url","url").all
 		array = []
-		@urls.each do |url|
-			array.push(url.encoded_url)
+		@urls.each do |code|
+			array.push({orginal_url:code.url,encoded_url:code.encoded_url})
 		end
 		render json:{list_of_short_urls:array}
 	end
 	#method :post
 	#localhost:3000/api/v1/url_generators
-	#using postman tool:the url as well as the user_id is input
 	def create
 		@url = UrlGenerator.new(url_params)
 		@url.check_the_url
 		if @url.modified_url.nil?
-			render json:{notice: "cannot create since a short link for this url is already exit",encoded_url:@url.encoded_url}
+			render json:{notice: "cannot create since this url is already exit",encoded_url:@url.encoded_url,status:200}
 		else
 			@url.save
 			render json:{notice: "successfully created",url:@url}					
@@ -55,6 +54,6 @@ class Api::V1::UrlGeneratorsController < Api::V1::ApiController
 	end
 	private
 		def url_params
-			params[:url_generator].permit(:url,:user_id)
+			params[:url_generator].permit(:url)
 		end
 end
